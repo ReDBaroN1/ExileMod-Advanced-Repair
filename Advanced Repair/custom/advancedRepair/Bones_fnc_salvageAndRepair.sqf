@@ -42,6 +42,14 @@ if (ExilePlayerInSafezone) exitWith
 	ExileClientActionDelayAbort = false;
 };
 
+if ((_vehicle distance player) > 8 ) exitWith 
+{
+	["ErrorTitleOnly", ["You need to get closer to the vehicle!"]] call ExileClient_gui_toaster_addTemplateToast;
+	ExileClientActionDelayShown = false;
+	ExileClientActionDelayAbort = false;
+};
+
+
 //Get the attributes for the type of repair
 if (_action == 'repairHeloHull') then
 {
@@ -124,9 +132,7 @@ if (_action == 'repairEngine') then
 	_partsToActOn = ["HitEngine","HitEngine2","HitEngine3"];
 	_partsNeeded = 
 		[
-		["Exile_Item_MetalWire","Metal Wire"],
-		["Exile_Item_JunkMetal","Junk Metal"],
-		["Exile_Item_OilCanister","Oil Canister"]
+    	["CDAH_engine_item","Engine"]
 		];
 	_itemsNeeded = 
 		[
@@ -141,9 +147,7 @@ if (_action == 'salvageEngine') then
 	_partsToActOn = ["HitEngine","HitEngine2","HitEngine3"];
 	_partsNeeded = 
 		[
-		["Exile_Item_MetalWire","Metal Wire"],
-		["Exile_Item_JunkMetal","Junk Metal"],
-		["Exile_Item_OilCanister","Oil Canister"]
+		["CDAH_engine_item","Engine"]
 		];
 	_itemsNeeded = 
 		[
@@ -176,16 +180,15 @@ if (_action == 'repairAllHelo') then
 
 if (_action == 'repairCarHull') then
 {
-	_partsToActOn = ["HitBody","HitGlass1","HitGlass2","HitGlass3","HitGlass4","HitGlass5","HitGlass6","HitGlass7","HitGlass8","HitRGlass","HitLGlass","HitFuel"];
+	_partsToActOn = ["HitBody","HitHull","HitTurret","HitGun"];
 	_partsNeeded = 
 		[
 		["Exile_Item_MetalBoard","Metal Board"],
-		["Exile_Item_DuctTape","Duct Tape"],
-		["Exile_Item_MetalScrews","Metal Screws"]
+		["Exile_Item_DuctTape","Duct Tape"]
 		];
 	_itemsNeeded = 
 		[
-		["Exile_Item_Screwdriver","ScrewDriver"]
+    	[["Exile_Item_Foolbox","Foolbox"],["Exile_Item_Pliers","Pliers"]]
 		];
 	_itemAction = 0;
 	_duration = 20;
@@ -193,72 +196,105 @@ if (_action == 'repairCarHull') then
 
 if (_action == 'repairWheel') then
 {
-	_vehicleClass = typeOf cursortarget;
-	if (_vehicleClass == "Exile_Car_HEMMT")then
-	{
-	_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel","HitLMWheel","HitLBWheel","HitRMWheel","HitRBWheel"];
-	} 
-	else
-	{
-		if (_vehicleClass == "Exile_Car_Zamak" || _vehicleClass == "Exile_Car_Tempest" || _vehicleClass == "Exile_Car_Ural_Open_Worker" || _vehicleClass == "Exile_Car_Ural_Open_Blue" || _vehicleClass == "Exile_Car_Ural_Open_Military" || _vehicleClass == "Exile_Car_Ural_Open_Yellow" || _vehicleClass == "Exile_Car_Ural_Covered_Worker" || _vehicleClass == "Exile_Car_Ural_Covered_Blue" || _vehicleClass == "Exile_Car_Ural_Covered_Military" || _vehicleClass == "Exile_Car_Ural_Covered_Yellow" || _vehicleClass == "Exile_Car_V3S_Open" || _vehicleClass == "Exile_Car_V3S_Covered") then
-			{
-			_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel","HitLMWheel","HitRMWheel"];
-			} 
-		else
-			{
-			_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel"];
-			};
-	};
+    _partName = _this select 2;
+    _partsToActOn = [_partName];
 	_partsNeeded = 
 	[
 	["Exile_Item_CarWheel","Car Wheel"]
 	];
 	_itemsNeeded = 
 	[
-	["Exile_Item_Wrench","Wrench"]
+	[["Exile_Item_Wrench","Wrench"], ["Exile_Item_Foolbox","Foolbox"]] //Wrench or foolbox
+	];
+	_itemAction = 0;
+	_duration = 15;
+};
+
+if (_action == 'salvageWheel') then
+{
+    _partName = _this select 2;
+    _partsToActOn = [_partName];
+	_partsNeeded = 
+	[
+	["Exile_Item_CarWheel","Car Wheel"]
+	];
+	_itemsNeeded = 
+	[
+    [["Exile_Item_Wrench","Wrench"], ["Exile_Item_Foolbox","Foolbox"]] //Wrench or foolbox
+	];
+	_itemAction = 1;
+	_duration = 10;
+};
+
+if (_action == 'repairGlass') then
+{
+    _partName = _this select 2;
+    _partsToActOn = [_partName];
+	_partsNeeded = 
+	[
+    	["CDAH_car_glass_item","Car Glass"]
+	];
+	_itemsNeeded = 
+	[
+    	["Exile_Item_Foolbox","Foolbox"]
 	];
 	_itemAction = 0;
 	_duration = 10;
 };
 
-if (_action == 'salvageWheel') then
+if (_action == 'salvageGlass') then
 {
-	_vehicleClass = typeOf cursortarget;
-	if (_vehicleClass == "Exile_Car_HEMMT")then
-	{
-	_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel","HitLMWheel","HitLBWheel","HitRMWheel","HitRBWheel"];
-	} 
-	else
-	{
-		if (_vehicleClass == "Exile_Car_Zamak" || _vehicleClass == "Exile_Car_Tempest" || _vehicleClass == "Exile_Car_Ural_Open_Worker" || _vehicleClass == "Exile_Car_Ural_Open_Blue" || _vehicleClass == "Exile_Car_Ural_Open_Military" || _vehicleClass == "Exile_Car_Ural_Open_Yellow" || _vehicleClass == "Exile_Car_Ural_Covered_Worker" || _vehicleClass == "Exile_Car_Ural_Covered_Blue" || _vehicleClass == "Exile_Car_Ural_Covered_Military" || _vehicleClass == "Exile_Car_Ural_Covered_Yellow" || _vehicleClass == "Exile_Car_V3S_Open" || _vehicleClass == "Exile_Car_V3S_Covered") then
-			{
-			_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel","HitLMWheel","HitRMWheel"];
-			} 
-		else
-			{
-			_partsToActOn = ["HitLF2Wheel","HitLFWheel","HitRFWheel","HitRF2Wheel"];
-			};
-	};
+    _partName = _this select 2;
+    _partsToActOn = [_partName];
 	_partsNeeded = 
 	[
-	["Exile_Item_CarWheel","Car Wheel"]
+    	["CDAH_car_glass_item","Car Glass"]
 	];
 	_itemsNeeded = 
 	[
-	["Exile_Item_Wrench","Wrench"]
+    	["Exile_Item_Foolbox","Foolbox"]
 	];
 	_itemAction = 1;
 	_duration = 10;
 };
+
+if (_action == 'repairFueltank') then
+{
+	_partsToActOn = ["HitFuel"];
+	_partsNeeded = 
+		[
+    	["Exitem_fueltank","Fueltank"]
+		];
+	_itemsNeeded = 
+		[
+		["Exile_Item_Foolbox","Foolbox"]
+		];
+	_itemAction = 0;
+	_duration = 20;
+};
+
+if (_action == 'salvageFueltank') then
+{
+	_partsToActOn = ["HitFuel"];
+	_partsNeeded = 
+		[
+    	["Exitem_fueltank","Fueltank"]
+		];
+	_itemsNeeded = 
+		[
+		["Exile_Item_Foolbox","Foolbox"]
+		];
+	_itemAction = 1;
+	_duration = 20;
+};
+
 
 if (_action == 'repairCarEngine') then
 {
 	_partsToActOn = ["HitEngine"];
 	_partsNeeded = 
 		[
-		["Exile_Item_MetalWire","Metal Wire"],
-		["Exile_Item_JunkMetal","Junk Metal"],
-		["Exile_Item_OilCanister","Oil Canister"]
+    	["CDAH_engine_item","Engine"]
 		];
 	_itemsNeeded = 
 		[
@@ -273,9 +309,7 @@ if (_action == 'salvageCarEngine') then
 	_partsToActOn = ["HitEngine"];
 	_partsNeeded = 
 		[
-		["Exile_Item_MetalWire","Metal Wire"],
-		["Exile_Item_JunkMetal","Junk Metal"],
-		["Exile_Item_OilCanister","Oil Canister"]
+    	["CDAH_engine_item","Engine"]
 		];
 	_itemsNeeded = 
 		[
@@ -316,7 +350,7 @@ if (_action == 'repairAllCar') then
 }forEach _partsToActOn;
 
 {
-	if ((_vehicle getHitPointDamage _x) < .2) then
+	if ((_vehicle getHitPointDamage _x) < 0.2) then
 	{	
 		_salvageableParts pushBack _x;
 	};
@@ -340,17 +374,35 @@ if (_itemAction == 0) then
 };
 
 {
-_currentItem = _x select 0;
-if (_currentItem in _equippedMagazines) then
-	{	
-		_usedArray pushback (_x select 1);
-	}
-	else
-	{
-		_missingArray pushback (_x select 1);
-	};
+    _currentItem = _x;
+//    diag_log format["Current item: %1", str _currentItem];
+    if ((typeName (_currentItem select 0)) == "ARRAY") then { //if there's array of tools listed -- player need just one of em.
+        private _missingArrayVariant = [];
+        private _itemVariantFound = false;
+        {
+            private _currentItemVariant = (_x select 0);
+            private _currentItemVariantName = (_x select 1);
+//            diag_log format["_currentItemVariant: %1", str _currentItemVariant];
+            if (_currentItemVariant in _equippedMagazines) then {	
+        		_usedArray pushback _currentItemVariantName;
+                _itemVariantFound = true;
+        	} else {
+           		_missingArrayVariant pushback _currentItemVariantName;
+            };
+        }forEach _currentItem;     
+        if (! _itemVariantFound) then {
+           		_missingArray pushback _missingArrayVariant;
+        };
+    } else { //assume scalar
+        if ((_currentItem select 0) in _equippedMagazines) then {	
+    		_usedArray pushback (_currentItem select 1);
+    	} else {
+    		_missingArray pushback (_currentItem select 1);
+     	};
+    };
 }forEach _itemsNeeded;
 
+//diag_log format ["_missingArray: %1  _usedArray: %2 ",str _missingArray, str _usedArray];
 //Check if there is anything to salvage/repair	
 if ((_itemAction == 1) && (_salvageableParts isEqualto [])) exitwith 
 	{
@@ -368,7 +420,26 @@ if ((_itemAction == 0) && (_repairableParts isEqualto [])) exitwith
 _temp1 = count _missingArray;
 if !(_temp1 == 0) exitwith
 	{
-	["ErrorTitleAndText", ["Missing Items!", format ["You are missing the following items : %1, %2, %3, %4. Aborted!",(_missingArray select 0), (_missingArray select 1),(_missingArray select 2),(_missingArray select 3)]]] call ExileClient_gui_toaster_addTemplateToast;
+        private _NoticeText = "You are missing the following items:";
+        private _NoticeTextFirstElement = true;
+        {
+            private _missingThing = _x;
+            if (!_NoticeTextFirstElement) then {_NoticeText = _NoticeText + ' and ';};
+            if (typeName _missingThing == "ARRAY") then { //if there's array of tools listed -- player need just one of em.
+                private _NoticeTextFirstElementVariant = true;
+                {
+                    if (!_NoticeTextFirstElementVariant) then {_NoticeText = _NoticeText + ' or ';};
+                    _NoticeText = _NoticeText + format ["<t color='#FFFFFF'>%1</t>", _x ];
+                    if (_NoticeTextFirstElementVariant) then {_NoticeTextFirstElementVariant = false;};
+                } forEach _missingThing;
+            } else {
+                _NoticeText = _NoticeText + format ["<t color='#FFFFFF'>%1</t>", _x];
+            };
+            if (_NoticeTextFirstElement) then {_NoticeTextFirstElement = false;};
+        } forEach _missingArray;
+        _NoticeText = _NoticeText + ".";
+
+	["ErrorTitleAndText", ["Missing Items!", _NoticeText]] call ExileClient_gui_toaster_addTemplateToast;
 	ExileClientActionDelayShown = false;
 	ExileClientActionDelayAbort = false;
 	};
@@ -471,9 +542,9 @@ catch
 				_tempcount = {_x == _tempPart} count (Magazines player);
 				if(_itemCount == _tempcount) then
 				{
-					_holder = createVehicle ["GroundWeaponHolder", position player, [], 0, "CAN_COLLIDE"];
+					_holder = createVehicle ["GroundWeaponHolder", getPosATL player, [], 0, "CAN_COLLIDE"];
 					_holder addItemCargoGlobal [_tempPart, 1];
-					["InfoTitleAndText",["Repair/Salvage Info", format["You have no space, %1 placed on the ground!",_x select 1]]] call ExileClient_gui_toaster_addTemplateToast;
+					["InfoTitleAndText",["Repair/Salvage Info", format["You have no space, <t color='#FFFFFF'>%1</t> placed on the ground!",_x select 1]]] call ExileClient_gui_toaster_addTemplateToast;
 				};
 				}forEach _partsNeeded;
 			};
@@ -497,3 +568,4 @@ catch
 (findDisplay 46) displayRemoveEventHandler ["MouseButtonDown", _mouseButtonDownHandle];
 ExileClientActionDelayShown = false;
 ExileClientActionDelayAbort = false;
+["vehicleSaveRequest",[netId _vehicle]] call ExileClient_system_network_send;
